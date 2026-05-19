@@ -1,7 +1,8 @@
 fastapi==0.115.12
 uvicorn[standard]==0.34.2
 
-tensorflow==2.15.0
+tensorflow==2.21.0
+keras==3.12.1
 
 numpy==1.26.4
 opencv-python==4.11.0.86
