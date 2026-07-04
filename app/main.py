@@ -2,14 +2,25 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.api.router import api_router
 from app.core.model_registry import load_models
+from app.core.embedding_extractor_registry import load_embedding_extractors
+from app.core.embedding_database_registry import load_embedding_databases
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
     print("Starting Temu Batik API...")
+
+    print("Loading models...")
     load_models()
-    print("All models loaded successfully")
+
+    print("Loading embedding extractors...")
+    load_embedding_extractors()
+
+    print("Loading embedding databases...")
+    load_embedding_databases()
+
+    print("Startup completed.")
 
     yield
 

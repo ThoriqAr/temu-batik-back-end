@@ -1,8 +1,14 @@
-from pydantic import BaseModel
+from app.schemas.base import (
+    BaseApiResponse
+)
 
 
-class PredictionResponse(BaseModel):
+class PredictionResponse(
+    BaseApiResponse
+):
 
-    predicted_class: str
-    confidence: float
-    predictions: list[float]
+    predicted_class: str | None = None
+
+    confidence: float | None = None
+
+    predictions: list[float] | None = None

@@ -1,6 +1,9 @@
+import uuid
 import base64
 import cv2
 import numpy as np
+from app.core.config import HEATMAP_DIR
+from app.debugging.artifacts import save_overlay
 
 
 def resize_heatmap(
@@ -113,6 +116,8 @@ def build_visualizations(
         original_image,
         heatmap
     )
+
+    save_overlay(overlay_image)
 
     return {
 

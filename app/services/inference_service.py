@@ -1,7 +1,14 @@
 import numpy as np
 
 from app.core.constants import CLASS_NAMES
-from app.core.model_registry import get_model
+
+from app.core.model_registry import (
+    get_model
+)
+
+from app.core.embedding_extractor_registry import (
+    get_embedding_extractor
+)
 
 from app.utils.image import (
     read_image,
@@ -15,11 +22,11 @@ from app.utils.preprocessing import (
 
 
 def prepare_input(
-    image_path: str,
+    image_bytes: bytes,
     model_name: str
 ):
 
-    image = read_image(image_path)
+    image = read_image(image_bytes)
 
     original_image = resize_image(image)
 
@@ -33,6 +40,28 @@ def prepare_input(
     )
 
     return original_image, image_tensor
+
+
+def extract_embedding(
+    image_tensor,
+    model_name: str
+):
+
+    extractor = get_embedding_extractor(model_name)
+
+    if extractor is None:
+
+        raise ValueError(
+            f"Embedding extractor "
+            f"'{model_name}' not found."
+        )
+
+    embedding = extractor.predict(
+        image_tensor,
+        verbose=0
+    )[0]
+
+    return embedding.astype(np.float32)
 
 
 def predict_tensor(
@@ -83,30 +112,30 @@ def predict_tensor(
     }
 
 
-def predict_image(
-    image_path: str,
+def run_inference(
+    image_bytes: bytes,
     model_name: str
 ):
 
-    _, image_tensor = prepare_input(
-        image_path,
-        model_name
+    original_image, image_tensor = prepare_input(
+        image_bytes=image_bytes,
+        model_name=model_name
     )
 
-    result = predict_tensor(
-        image_tensor,
-        model_name
+    embedding = extract_embedding(
+        image_tensor=image_tensor,
+        model_name=model_name
     )
 
-    return {
+    prediction = predict_tensor(
+        image_tensor=image_tensor,
+        model_name=model_name
+    )
 
-        "predicted_class":
-            result["predicted_class"],
+    prediction["original_image"] = original_image
 
-        "confidence":
-            result["confidence"],
+    prediction["image_tensor"] = image_tensor
 
-        "predictions":
-            result["predictions"][0].tolist()
+    prediction["embedding"] = embedding
 
-    }
+    return prediction

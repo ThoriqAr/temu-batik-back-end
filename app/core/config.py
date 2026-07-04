@@ -10,7 +10,40 @@ TEMP_DIR = BASE_DIR / "temp"
 UPLOAD_DIR = TEMP_DIR / "uploads"
 HEATMAP_DIR = TEMP_DIR / "heatmaps"
 
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-HEATMAP_DIR.mkdir(parents=True, exist_ok=True)
+EMBEDDING_DIR = (
+    BASE_DIR /
+    "artifacts" /
+    "embeddings"
+)
 
-DEBUG = os.getenv("DEBUG", "True") == "True"
+def get_bool(name: str, default=False):
+
+    value = os.getenv(name)
+
+    if value is None:
+        return default
+
+    return value.strip().lower() in (
+        "true",
+        "1",
+        "yes",
+        "on"
+    )
+
+
+ENABLE_DEBUG_ARTIFACTS = get_bool(
+    "ENABLE_DEBUG_ARTIFACTS",
+    default=False
+)
+
+if ENABLE_DEBUG_ARTIFACTS:
+
+    UPLOAD_DIR.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    HEATMAP_DIR.mkdir(
+        parents=True,
+        exist_ok=True
+    )

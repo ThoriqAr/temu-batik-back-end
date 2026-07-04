@@ -1,0 +1,14 @@
+{
+    "model_name": "resnet50",
+    "embedding_layer": "dense",
+    "embedding_dimension": 256,
+    "normalize": true,
+    "num_images": 3000,
+    "image_size": [
+        224,
+        224
+    ],
+    "num_classes": 20,
+    "seed": 42,
+    "backbone_name": "resnet50"
+}

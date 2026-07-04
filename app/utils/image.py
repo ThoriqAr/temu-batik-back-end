@@ -1,15 +1,31 @@
 import cv2
 import numpy as np
 
-from PIL import Image
 from app.core.constants import IMAGE_SIZE
 
 
-def read_image(image_path: str):
+def read_image(image_bytes: bytes):
 
-    image = Image.open(image_path)
-    image = image.convert("RGB")
-    image = np.array(image)
+    image_array = np.frombuffer(
+        image_bytes,
+        dtype=np.uint8
+    )
+
+    image = cv2.imdecode(
+        image_array,
+        cv2.IMREAD_COLOR
+    )
+
+    if image is None:
+
+        raise ValueError(
+            "Invalid image."
+        )
+
+    image = cv2.cvtColor(
+        image,
+        cv2.COLOR_BGR2RGB
+    )
 
     return image
 

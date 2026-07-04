@@ -7,6 +7,8 @@ MODEL_REGISTRY = {}
 
 def load_models():
 
+    MODEL_REGISTRY.clear()
+
     for model_key, config in MODEL_CONFIGS.items():
 
         print(f"Loading model: {model_key}")

@@ -1,6 +1,8 @@
 from fastapi import APIRouter
 from app.core.model_registry import get_model
 from app.core.model_registry import MODEL_REGISTRY
+from app.core.embedding_extractor_registry import EMBEDDING_REGISTRY
+from app.core.embedding_database_registry import EMBEDDING_DATABASES
 
 router = APIRouter()
 
@@ -31,4 +33,36 @@ def get_model_layers(model_name: str):
 
     return {
         "layers": layer_names
+    }
+
+@router.get("/embeddings")
+def get_embedding_models():
+
+    return {
+        "embedding_extractors":
+            list(
+                EMBEDDING_REGISTRY.keys()
+            )
+    }
+
+@router.get("/embedding-databases")
+def embedding_databases():
+
+    return {
+        model_name: {
+            "num_embeddings":
+                len(data["embeddings"]),
+
+            "dimension":
+                int(
+                    data["embeddings"].shape[1]
+                ),
+
+            "num_classes":
+                data["metadata"]["num_classes"]
+        }
+
+        for model_name, data
+        in EMBEDDING_DATABASES.items()
+
     }

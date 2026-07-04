@@ -33,12 +33,14 @@ MODEL_CONFIGS = {
         "model_path": BASE_DIR / "artifacts/models/MobileNetV2.keras",
         "backbone": "mobilenetv2_1.00_224",
         "last_conv_layer": "out_relu",
+        "embedding_layer": "dense",
     },
     "resnet50": {
         "display_name": "ResNet50",
         "model_path": BASE_DIR / "artifacts/models/ResNet50.keras",
         "backbone": "resnet50",
         "last_conv_layer": "conv5_block3_out",
+        "embedding_layer": "dense",
     },
 }
 

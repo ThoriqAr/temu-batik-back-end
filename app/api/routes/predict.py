@@ -6,8 +6,7 @@ from fastapi import (
 )
 
 from app.schemas.prediction import PredictionResponse
-from app.services.inference_service import predict_image
-from app.utils.file import save_upload_file
+from app.services.prediction_service import predict_image
 
 router = APIRouter()
 
@@ -21,8 +20,6 @@ async def predict(
     file: UploadFile = File(...)
 ):
 
-    file_path = await save_upload_file(file)
-
     if model_name not in [
       "mobilenetv2",
       "resnet50"
@@ -32,9 +29,11 @@ async def predict(
           detail="Invalid model name"
       )
 
+    image_bytes = await file.read()
+
     result = predict_image(
-        str(file_path),
-        model_name
+        image_bytes=image_bytes,
+        model_name=model_name
     )
 
     return result

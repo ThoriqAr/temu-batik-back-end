@@ -5,7 +5,7 @@ from fastapi import (
     HTTPException
 )
 
-from app.utils.file import save_upload_file
+from app.schemas.explanation import ExplanationResponse
 
 from app.services.explain_service import (
     explain_image
@@ -14,7 +14,10 @@ from app.services.explain_service import (
 router = APIRouter()
 
 
-@router.post("/explain/{model_name}")
+@router.post(
+    "/explain/{model_name}",
+    response_model=ExplanationResponse
+)
 async def explain(
 
     model_name: str,
@@ -32,14 +35,12 @@ async def explain(
             detail="Invalid model name"
         )
 
-    file_path = await save_upload_file(file)
+    image_bytes = await file.read()
 
     try:
 
         return explain_image(
-
-            image_path=str(file_path),
-
+            image_bytes=image_bytes,
             model_name=model_name
         )
 

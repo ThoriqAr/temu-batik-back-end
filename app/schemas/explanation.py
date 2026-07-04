@@ -1,24 +1,28 @@
-from pydantic import BaseModel
+from app.schemas.base import (
+    BaseApiResponse
+)
 
 
 class ExplanationResponse(
-    BaseModel
+    BaseApiResponse
 ):
 
-    predicted_class: str
+    predicted_class: str | None = None
 
-    confidence: float
+    confidence: float | None = None
 
-    focus_region: str
+    focus_region: str | None = None
 
-    focus_percentage: float
+    focus_percentage: float | None = None
 
-    peak_activation: float
+    peak_activation: float | None = None
 
-    attention_distribution: str
+    attention_distribution: str | None = None
 
-    active_regions: int
+    active_regions: int | None = None
 
-    explanation: str
+    region_scores: dict[str, float] | None = None
 
-    overlay_image: str
+    explanation: str | None = None
+
+    overlay_image: str | None = None
