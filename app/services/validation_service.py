@@ -3,9 +3,9 @@ from app.services.embedding_similarity_service import (
 )
 
 
-VALID_THRESHOLD = 0.90
+VALID_SIMILARITY = 0.85
 
-UNKNOWN_THRESHOLD = 0.80
+MIN_MEAN_TOPK = 0.80
 
 MIN_AGREEMENT = 0.80
 
@@ -45,17 +45,25 @@ def validate_embedding(
 
     max_similarity = statistics["max_similarity"]
 
+    mean_topk = statistics["mean_topk_similarity"]
+
     agreement = statistics["agreement"]
 
-    if (
+    is_valid = (
 
-        max_similarity >= VALID_THRESHOLD
+        max_similarity >= VALID_SIMILARITY
+
+        and
+
+        mean_topk >= MIN_MEAN_TOPK
 
         and
 
         agreement >= MIN_AGREEMENT
 
-    ):
+    )
+
+    if is_valid:
 
         return build_validation_response(
 
@@ -68,37 +76,17 @@ def validate_embedding(
 
         )
 
-    if max_similarity >= UNKNOWN_THRESHOLD:
-
-        return build_validation_response(
-
-            is_valid=False,
-            status="unknown_batik",
-            severity="info",
-            title="Motif belum dikenali",
-            message=(
-                "Gambar tampak merupakan motif batik, "
-                "namun jenis motif tersebut belum tersedia "
-                "pada aplikasi saat ini. "
-                "Silakan gunakan salah satu motif "
-                "yang didukung aplikasi."
-            ),
-            similarity_result=similarity_result
-
-        )
-
     return build_validation_response(
 
         is_valid=False,
-        status="non_batik",
+        status="invalid",
         severity="warning",
         title="Motif tidak dapat dikenali",
         message=(
-            "Gambar yang dipilih belum dapat dikenali "
-            "sebagai motif batik. "
-            "Pastikan motif terlihat jelas, "
-            "pencahayaan cukup, "
-            "dan objek yang difoto merupakan kain batik."
+            "Gambar belum dapat dipastikan sebagai salah satu "
+            "motif batik yang didukung aplikasi. "
+            "Pastikan motif terlihat jelas dan gunakan salah satu "
+            "motif batik yang tersedia pada aplikasi."
         ),
         similarity_result=similarity_result
         
